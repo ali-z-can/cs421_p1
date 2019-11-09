@@ -49,11 +49,15 @@ public class imageLabeler {
                 data_length[m] = (byte)in.read();
             }
             //in2.read(data_length);
-            int val = ((data_length[0] & 0xff) << 16) | ((data_length[1] & 0xff) << 8) | (data_length[2] & 0xf)  ;
+            int val = ((data_length[0] & 0xff) << 16) | ((data_length[1] & 0xff) << 8) | (data_length[2] & 0xff);
 
             ////////olurda size okunursa mesajın geri kalanı burada byte array üzerinden dosyaya yazılacak
             byte[] data = new byte[val];
-            in2.read(data);
+
+            for(int k = 0; k < val; k++){
+                data[k] = (byte)in.read();
+            }
+
             System.out.println();
 
 
