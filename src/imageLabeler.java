@@ -34,19 +34,18 @@ public class imageLabeler {
         out.writeBytes( msg);
         DataInputStream in2 = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
 
-
         for(int j = 0; j < 3; j++){
 
             String resp = "";
             for(int i =0;i<4;i++){
-                resp += (char)in.read();
+                resp += (char)in2.read();
             }
 
             ////////burada size okunacak
 
             byte[] data_length = new byte[3];
             for(int m = 0; m<3; m++){
-                data_length[m] = (byte)in.read();
+                data_length[m] = (byte)in2.read();
             }
             //in2.read(data_length);
             int val = ((data_length[0] & 0xff) << 16) | ((data_length[1] & 0xff) << 8) | (data_length[2] & 0xff);
@@ -55,7 +54,7 @@ public class imageLabeler {
             byte[] data = new byte[val];
 
             for(int k = 0; k < val; k++){
-                data[k] = (byte)in.read();
+                data[k] = (byte)in2.read();
             }
 
             System.out.println();
