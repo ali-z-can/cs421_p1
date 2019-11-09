@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 
 public class imageLabeler {
     private Socket clientSocket;
@@ -9,6 +10,13 @@ public class imageLabeler {
     private String pass = "cs421f2019";
     private String newLine = "\r\n";
 
+    public void saveFile(byte[] data,String fileName) throws IOException {
+        File file = new File(fileName);
+        OutputStream os = null;
+        os = new FileOutputStream(file);
+        os.write(data);
+        os.close();
+    }
 
     public void startConnection(String ip, int port) throws IOException {
         clientSocket = new Socket(ip, port);
@@ -57,7 +65,8 @@ public class imageLabeler {
                 data[k] = (byte)in2.read();
             }
 
-            System.out.println();
+            saveFile(data,j+".jpg");
+
 
 
         }
@@ -74,8 +83,9 @@ public class imageLabeler {
     }
 
     public static void main(String[] args) throws IOException {
+        Scanner sc  = new Scanner(System.in);
         imageLabeler client = new imageLabeler();
-        client.startConnection("127.0.0.1", 60000);
+        client.startConnection(args[0], Integer.parseInt(args[1]));
         String resps[] = new String[3];
 
         String response = client.sendMessage("USER "+client.username+client.newLine);
@@ -84,15 +94,18 @@ public class imageLabeler {
         response = client.sendMessage("PASS "+client.pass+client.newLine);
         System.out.println("Response: " + response);
 
-        //todo çalışmıyo amk ?_?
         resps = client.send_iget("IGET"+client.newLine);
-        for(int i = 0; i<3;i++){
-            System.out.println("Response["+i+"]: " + resps[i]);
-        }
-        String[] labels = new String[3];
-        //todo label and send accurate labels
 
-        response = client.sendMessage("ILBL " +"cat,dog,bear"+client.newLine);
+        String[] labels = new String[3];
+
+        System.out.println("Files saved please view and enter accurate labels (1 per line):");
+        String label1 = sc.nextLine();
+        String label2 = sc.nextLine();
+        String label3 = sc.nextLine();
+
+        //response = client.sendMessage("ILBL " +"cat,dog,bear"+client.newLine);
+        response = client.sendMessage("ILBL " +label1+","+label2+","+label3+client.newLine);
+
         System.out.println("Response: " + response);
 
         response = client.sendMessage("EXIT"+client.newLine);
